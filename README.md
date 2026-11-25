@@ -8,8 +8,8 @@ Proyecto para el Chile Team1 Avalanche Hackathon, del curso Aplicaciones de Bloc
 | --- | --- |
 | Contrato en Fuji | `0x5C32584E07C5Fc54c8B2c2Bdd235fa054Cb3d883` (código verificado) |
 | Ver en Snowtrace | https://testnet.snowtrace.io/address/0x5C32584E07C5Fc54c8B2c2Bdd235fa054Cb3d883 |
-| Transacción de ejemplo | https://testnet.snowtrace.io/tx/0x_COMPLETAR_ |
-| Demo | https://_COMPLETAR_.vercel.app |
+| Transacción de ejemplo|https://testnet.snowtrace.io/tx/0xba963294488d8e8784ce194640dcd847fd5d892648d0a31770d723b17f943bed |
+| Demo | https://polla-sin-tesorero.vercel.app |
 | Video | _COMPLETAR_ |
 | Red | Avalanche Fuji C-Chain (testnet), Chain ID 43113 |
 
@@ -83,6 +83,8 @@ Las variables `NEXT_PUBLIC_CONTRACT_ADDRESS` y `NEXT_PUBLIC_CHAIN_ID=43113` son 
 
 ## Equipo
 
-- _Nombre 1_
-- _Nombre 2_
-- _Nombre 3_
+- Agustín Arraño
+- Lucas Escobar
+- Martín Ibeas
+- Rafaela Quintana
+- Christian Valenzuela
