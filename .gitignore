@@ -1,0 +1,25 @@
+# Dependencias y archivos generados
+node_modules/
+.next/
+out/
+artifacts/
+cache/
+types/
+coverage/
+*.tsbuildinfo
+next-env.d.ts
+
+# Claves y variables de entorno: NUNCA se suben
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Despliegues locales de Hardhat Ignition
+ignition/deployments/chain-31337/
+
+# Sistema
+.DS_Store
+Thumbs.db
+.vercel
