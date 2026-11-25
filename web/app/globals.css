@@ -1,0 +1,532 @@
+/*
+  Polla sin tesorero: la cancha y el marcador.
+  - Césped: verde de cancha recién cortada (franjas en el marcador).
+  - Marcador: ámbar de tablero de estadio para el pozo.
+  - Tiza: fondo blanco frío, como la línea pintada.
+*/
+:root {
+  --cesped: #0b4d33;
+  --cesped-claro: #12603f;
+  --tiza: #f4f6f1;
+  --blanco: #ffffff;
+  --tinta: #13261c;
+  --tinta-suave: #4f6357;
+  --linea: #d3dcd2;
+  --marcador: #ffc531;
+  --alerta: #c8342f;
+  --alerta-fondo: #fdecea;
+
+  --fuente-marcador: "Bahnschrift", "DIN Alternate", "DIN Condensed", "Arial Narrow",
+    system-ui, sans-serif;
+  --fuente: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  --radio: 10px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--tiza);
+  color: var(--tinta);
+  font-family: var(--fuente);
+  font-size: 1rem;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--cesped);
+  text-underline-offset: 3px;
+}
+
+code {
+  font-size: 0.9em;
+  background: rgba(11, 77, 51, 0.08);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+}
+
+:focus-visible {
+  outline: 3px solid var(--marcador);
+  outline-offset: 2px;
+}
+
+/* ---------- Estructura ---------- */
+
+.pagina {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.barra {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 0.9rem clamp(1rem, 4vw, 2rem);
+  background: var(--cesped);
+  color: var(--blanco);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.marca {
+  font-family: var(--fuente-marcador);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.wallets {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.contenido {
+  flex: 1;
+  width: 100%;
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 4vw, 2rem) 3rem;
+}
+
+.pie {
+  max-width: 44rem;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1.25rem clamp(1rem, 4vw, 2rem) 2rem;
+  color: var(--tinta-suave);
+  font-size: 0.875rem;
+}
+
+/* ---------- Marcador (lo memorable) ---------- */
+
+.marcador {
+  padding: 1.5rem clamp(1rem, 4vw, 2rem) 1.75rem;
+  color: var(--blanco);
+  /* franjas de césped cortado */
+  background: repeating-linear-gradient(
+    90deg,
+    var(--cesped) 0 64px,
+    var(--cesped-claro) 64px 128px
+  );
+  border-bottom: 4px solid var(--blanco);
+}
+
+.marcador-interior {
+  max-width: 40rem;
+  margin: 0 auto;
+}
+
+.marcador p {
+  margin: 0;
+}
+
+.marcador-nombre {
+  font-size: 1.05rem;
+  opacity: 0.9;
+}
+
+.marcador-pozo {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin-top: 0.25rem !important;
+}
+
+.marcador-cifra {
+  font-family: var(--fuente-marcador);
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(3.5rem, 14vw, 6.5rem);
+  line-height: 1;
+  font-weight: 700;
+  color: var(--marcador);
+  background: rgba(0, 0, 0, 0.35);
+  padding: 0.12em 0.25em 0.06em;
+  border-radius: 6px;
+  letter-spacing: 0.02em;
+}
+
+.marcador-moneda {
+  font-family: var(--fuente-marcador);
+  font-size: clamp(1.25rem, 4vw, 1.75rem);
+  font-weight: 600;
+}
+
+.marcador-pie {
+  margin-top: 0.5rem !important;
+  opacity: 0.85;
+}
+
+.marcador-datos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+  gap: 0.75rem 1.25rem;
+  margin: 1.5rem 0 0;
+}
+
+.marcador-datos div {
+  border-top: 1px solid rgba(255, 255, 255, 0.35);
+  padding-top: 0.4rem;
+}
+
+.reparto {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 0.75rem;
+}
+
+.reparto span {
+  white-space: nowrap;
+}
+
+.marcador-datos dt {
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.marcador-datos dd {
+  margin: 0;
+  font-family: var(--fuente-marcador);
+  font-size: 1.1rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Etapas (es una secuencia real, por eso va numerada) ---------- */
+
+.etapas {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.25rem;
+  margin: 1.25rem 0 0.5rem;
+  padding: 0;
+  font-size: 0.85rem;
+  color: var(--tinta-suave);
+}
+
+.etapas li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding-top: 0.5rem;
+  border-top: 3px solid var(--linea);
+}
+
+.etapas li.hecha {
+  border-top-color: var(--cesped-claro);
+}
+
+.etapas li.actual {
+  border-top-color: var(--marcador);
+  color: var(--tinta);
+  font-weight: 600;
+}
+
+.etapa-n {
+  font-family: var(--fuente-marcador);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Bloques de contenido ---------- */
+
+.bloque {
+  margin-top: 2rem;
+}
+
+.bloque h2 {
+  font-family: var(--fuente-marcador);
+  font-size: 1.5rem;
+  line-height: 1.2;
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+}
+
+.bloque > p {
+  margin: 0 0 1rem;
+  max-width: 38rem;
+}
+
+.nota {
+  color: var(--tinta-suave);
+  font-size: 0.9rem;
+}
+
+.nota.error {
+  color: var(--alerta);
+}
+
+/* ---------- Botones ---------- */
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 2.75rem;
+  padding: 0.6rem 1.15rem;
+  font: inherit;
+  font-weight: 600;
+  color: var(--blanco);
+  background: var(--cesped);
+  border: 2px solid var(--cesped);
+  border-radius: var(--radio);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.boton:hover:not(:disabled) {
+  background: var(--cesped-claro);
+  border-color: var(--cesped-claro);
+}
+
+.boton:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.boton.secundario {
+  color: var(--cesped);
+  background: transparent;
+}
+
+.boton.secundario:hover:not(:disabled) {
+  background: rgba(11, 77, 51, 0.07);
+}
+
+.boton.chico {
+  min-height: 2.25rem;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.9rem;
+}
+
+.barra .boton {
+  background: var(--blanco);
+  color: var(--cesped);
+  border-color: var(--blanco);
+}
+
+.barra .boton.secundario {
+  background: transparent;
+  color: var(--blanco);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+/* ---------- Avisos y transacción ---------- */
+
+.aviso,
+.transaccion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radio);
+  background: var(--blanco);
+  border: 1px solid var(--linea);
+}
+
+.aviso.error {
+  background: var(--alerta-fondo);
+  border-color: #f1c2bf;
+  color: #6f1d1a;
+}
+
+.aviso .boton:not(.secundario) {
+  background: var(--alerta);
+  border-color: var(--alerta);
+}
+
+.transaccion {
+  border-left: 5px solid var(--marcador);
+}
+
+.transaccion.ok {
+  border-left-color: var(--cesped-claro);
+}
+
+.transaccion p {
+  margin: 0;
+}
+
+.hash {
+  font-size: 0.9rem;
+  width: 100%;
+}
+
+/* ---------- Propuestas ---------- */
+
+.propuestas {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.propuesta {
+  background: var(--blanco);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+  padding: 1rem;
+}
+
+.propuesta.mia {
+  border-color: var(--cesped-claro);
+  box-shadow: inset 4px 0 0 var(--cesped-claro);
+}
+
+.propuesta-cabeza {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.etiqueta-voto {
+  margin: 0.5rem 0 0;
+  font-weight: 600;
+  color: var(--cesped);
+}
+
+.podio {
+  list-style: none;
+  margin: 0 0 0.75rem;
+  padding: 0;
+}
+
+.podio li {
+  display: grid;
+  grid-template-columns: 2.25rem 1fr auto;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.3rem 0;
+  border-bottom: 1px dashed var(--linea);
+}
+
+.podio-lugar {
+  font-family: var(--fuente-marcador);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.podio-monto {
+  font-family: var(--fuente-marcador);
+  font-variant-numeric: tabular-nums;
+}
+
+.podio.grande {
+  font-size: 1.15rem;
+  margin-bottom: 1.25rem;
+}
+
+.dir {
+  font-variant-numeric: tabular-nums;
+}
+
+.tu {
+  color: var(--cesped);
+  font-weight: 600;
+}
+
+/* Tanda de penales: cada balón lleno es un voto */
+.penales {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.penales-bolas {
+  display: inline-flex;
+  gap: 0.35rem;
+}
+
+.bola {
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 50%;
+  border: 2px solid var(--tinta-suave);
+  background: transparent;
+}
+
+.bola.gol {
+  border-color: var(--cesped);
+  background: var(--cesped);
+  box-shadow: inset 0 0 0 2px var(--blanco);
+}
+
+/* ---------- Formulario ---------- */
+
+.formulario {
+  display: grid;
+  gap: 0.85rem;
+  max-width: 26rem;
+}
+
+.campo {
+  display: grid;
+  gap: 0.3rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.campo select {
+  font: inherit;
+  font-weight: 400;
+  min-height: 2.75rem;
+  padding: 0.5rem 0.65rem;
+  border-radius: var(--radio);
+  border: 1px solid var(--linea);
+  background: var(--blanco);
+  color: var(--tinta);
+}
+
+/* ---------- Participantes ---------- */
+
+.lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: var(--blanco);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+}
+
+.lista li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.6rem 1rem;
+}
+
+.lista li + li {
+  border-top: 1px solid var(--linea);
+}
+
+@media (max-width: 30rem) {
+  .etapas {
+    font-size: 0.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
