@@ -22,6 +22,7 @@ import {
 } from "wagmi";
 import { avalancheFuji } from "wagmi/chains";
 
+import { Portada } from "@/components/Portada";
 import { pollaAbi } from "@/lib/abi";
 import { CHAIN_OK, CONTRACT_ADDRESS, SNOWTRACE } from "@/lib/wagmi";
 
@@ -86,9 +87,8 @@ export function Polla() {
     return (
       <Pagina>
         <Aviso tipo="error">
-          Falta la dirección del contrato. Agrega NEXT_PUBLIC_CONTRACT_ADDRESS (empieza con 0x)
-          en <code>.env.local</code> o en las variables de entorno de Vercel, y vuelve a
-          publicar.
+          Falta la dirección del contrato. Agrega NEXT_PUBLIC_CONTRACT_ADDRESS (empieza con 0x) en{" "}
+          <code>.env.local</code> o en las variables de entorno de Vercel, y vuelve a publicar.
         </Aviso>
       </Pagina>
     );
@@ -142,7 +142,14 @@ function App({ contrato }: { contrato: Address }) {
     () =>
       (propuestasQ.data ?? []).flatMap((res, i) =>
         res.status === "success"
-          ? [{ id: i + 1, proponente: res.result[0], ganadores: res.result[1], votos: res.result[2] }]
+          ? [
+              {
+                id: i + 1,
+                proponente: res.result[0],
+                ganadores: res.result[1],
+                votos: res.result[2],
+              },
+            ]
           : [],
       ),
     [propuestasQ.data],
@@ -217,7 +224,7 @@ function App({ contrato }: { contrato: Address }) {
   // ----- Derivados para la pantalla ---------------------------------------
   const estado = r?.estado;
   const soyParticipante = participantes.some((p) => igual(p, yo));
-  const miVoto = yo ? votoDe.get(yo.toLowerCase()) ?? 0 : 0;
+  const miVoto = yo ? (votoDe.get(yo.toLowerCase()) ?? 0) : 0;
   const minimo = Math.max(2, porcentajes.length);
   const necesarios = Number(r?.votosNecesarios ?? 0n);
   const totalRepartido = r ? r.cuota * BigInt(participantes.length) : 0n;
@@ -229,41 +236,51 @@ function App({ contrato }: { contrato: Address }) {
     <Pagina
       barra={<Wallet conectado={isConnected} yo={yo} />}
       hero={
-        /* Marcador: lo más importante de un vistazo */
-      <header className="marcador">
-        <div className="marcador-interior">
-        <p className="marcador-nombre">{r?.nombre ?? "Cargando la polla…"}</p>
-        <p className="marcador-pozo" aria-label="Pozo actual">
-          <span className="marcador-cifra">{avax(estado === 2 ? totalRepartido : r?.pozo)}</span>
-          <span className="marcador-moneda">AVAX</span>
-        </p>
-        <p className="marcador-pie">
-          {estado === 2 ? "repartidos entre los ganadores" : "en el pozo, custodiados por el contrato"}
-        </p>
-        <dl className="marcador-datos">
-          <div>
-            <dt>Estado</dt>
-            <dd>{estado === undefined ? "—" : ESTADOS[estado]}</dd>
-          </div>
-          <div>
-            <dt>Cuota</dt>
-            <dd>{avax(r?.cuota)} AVAX</dd>
-          </div>
-          <div>
-            <dt>Reparto</dt>
-            <dd className="reparto">
-              {porcentajes.length === 0
-                ? "—"
-                : porcentajes.map((p, i) => <span key={i}>{`${i + 1}° ${p}%`}</span>)}
-            </dd>
-          </div>
-          <div>
-            <dt>Participantes</dt>
-            <dd>{participantes.length}</dd>
-          </div>
-        </dl>
-        </div>
-      </header>
+        <>
+          <Portada
+            participantes={participantes.length}
+            contratoUrl={`${SNOWTRACE}/address/${contrato}`}
+          />
+          {/* Marcador: lo más importante de un vistazo */}
+          <header className="marcador" id="polla">
+            <div className="marcador-interior">
+              <p className="marcador-nombre">{r?.nombre ?? "Cargando la polla…"}</p>
+              <p className="marcador-pozo" aria-label="Pozo actual">
+                <span className="marcador-cifra">
+                  {avax(estado === 2 ? totalRepartido : r?.pozo)}
+                </span>
+                <span className="marcador-moneda">AVAX</span>
+              </p>
+              <p className="marcador-pie">
+                {estado === 2
+                  ? "repartidos entre los ganadores"
+                  : "en el pozo, custodiados por el contrato"}
+              </p>
+              <dl className="marcador-datos">
+                <div>
+                  <dt>Estado</dt>
+                  <dd>{estado === undefined ? "—" : ESTADOS[estado]}</dd>
+                </div>
+                <div>
+                  <dt>Cuota</dt>
+                  <dd>{avax(r?.cuota)} AVAX</dd>
+                </div>
+                <div>
+                  <dt>Reparto</dt>
+                  <dd className="reparto">
+                    {porcentajes.length === 0
+                      ? "—"
+                      : porcentajes.map((p, i) => <span key={i}>{`${i + 1}° ${p}%`}</span>)}
+                  </dd>
+                </div>
+                <div>
+                  <dt>Participantes</dt>
+                  <dd>{participantes.length}</dd>
+                </div>
+              </dl>
+            </div>
+          </header>
+        </>
       }
       pie={
         <>
@@ -275,7 +292,6 @@ function App({ contrato }: { contrato: Address }) {
         </>
       }
     >
-
       <Etapas actual={etapa} />
 
       {resumenQ.isError && (
@@ -318,9 +334,9 @@ function App({ contrato }: { contrato: Address }) {
           ) : (
             <>
               <p>
-                Ya estás inscrito. Cuando estén todos, cualquier participante cierra la
-                inscripción y el pozo queda bloqueado: desde ese momento nadie más entra y nadie
-                puede sacar la plata por su cuenta.
+                Ya estás inscrito. Cuando estén todos, cualquier participante cierra la inscripción
+                y el pozo queda bloqueado: desde ese momento nadie más entra y nadie puede sacar la
+                plata por su cuenta.
               </p>
               <button
                 className="boton"
@@ -343,19 +359,19 @@ function App({ contrato }: { contrato: Address }) {
           <section className="bloque">
             <h2>Resultados</h2>
             <p>
-              Terminado el torneo, cualquier participante propone a los ganadores. El pozo se
-              paga solo cuando {necesarios} de {participantes.length} participantes apoyan la
-              misma propuesta.
+              Terminado el torneo, cualquier participante propone a los ganadores. El pozo se paga
+              solo cuando {necesarios} de {participantes.length} participantes apoyan la misma
+              propuesta.
             </p>
-            {propuestas.length === 0 && (
-              <p className="nota">Todavía nadie propone ganadores.</p>
-            )}
+            {propuestas.length === 0 && <p className="nota">Todavía nadie propone ganadores.</p>}
             <ul className="propuestas">
               {propuestas.map((p) => (
                 <li key={p.id} className={miVoto === p.id ? "propuesta mia" : "propuesta"}>
                   <div className="propuesta-cabeza">
                     <strong>Propuesta #{p.id}</strong>
-                    <span className="nota">de {igual(p.proponente, yo) ? "ti" : corta(p.proponente)}</span>
+                    <span className="nota">
+                      de {igual(p.proponente, yo) ? "ti" : corta(p.proponente)}
+                    </span>
                   </div>
                   <ol className="podio">
                     {p.ganadores.map((g, i) => (
@@ -403,8 +419,8 @@ function App({ contrato }: { contrato: Address }) {
         <section className="bloque">
           <h2>Premios pagados</h2>
           <p>
-            La propuesta #{Number(r?.propuestaGanadora ?? 0n)} alcanzó la mayoría y el contrato
-            pagó en esa misma transacción. Nadie tuvo que pedirle la plata a un tesorero.
+            La propuesta #{Number(r?.propuestaGanadora ?? 0n)} alcanzó la mayoría y el contrato pagó
+            en esa misma transacción. Nadie tuvo que pedirle la plata a un tesorero.
           </p>
           <ol className="podio grande">
             {propuestas
@@ -414,7 +430,9 @@ function App({ contrato }: { contrato: Address }) {
                   .slice(1)
                   .reduce((s, pct) => s + (totalRepartido * BigInt(pct)) / 100n, 0n);
                 const monto =
-                  i === 0 ? totalRepartido - otros : (totalRepartido * BigInt(porcentajes[i])) / 100n;
+                  i === 0
+                    ? totalRepartido - otros
+                    : (totalRepartido * BigInt(porcentajes[i])) / 100n;
                 return (
                   <li key={g}>
                     <span className="podio-lugar">{i + 1}°</span>
@@ -487,9 +505,7 @@ function Pagina({
         {barra}
       </nav>
       {hero}
-      <main className="contenido">
-        {cargando ? <p className="nota">Cargando…</p> : children}
-      </main>
+      <main className="contenido">{cargando ? <p className="nota">Cargando…</p> : children}</main>
       {pie && <footer className="pie">{pie}</footer>}
     </div>
   );
@@ -610,7 +626,10 @@ function Proponer({
   return (
     <section className="bloque">
       <h2>Proponer ganadores</h2>
-      <p>Elige a quién le corresponde cada lugar según la tabla final de la polla. Proponer cuenta como tu voto.</p>
+      <p>
+        Elige a quién le corresponde cada lugar según la tabla final de la polla. Proponer cuenta
+        como tu voto.
+      </p>
       <form
         className="formulario"
         onSubmit={(e) => {

@@ -5,6 +5,7 @@
   - Tiza: fondo blanco frío, como la línea pintada.
 */
 :root {
+  --noche: #04170f;
   --cesped: #0b4d33;
   --cesped-claro: #12603f;
   --tiza: #f4f6f1;
@@ -16,8 +17,8 @@
   --alerta: #c8342f;
   --alerta-fondo: #fdecea;
 
-  --fuente-marcador: "Bahnschrift", "DIN Alternate", "DIN Condensed", "Arial Narrow",
-    system-ui, sans-serif;
+  --fuente-marcador:
+    "Bahnschrift", "DIN Alternate", "DIN Condensed", "Arial Narrow", system-ui, sans-serif;
   --fuente: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 
   --radio: 10px;
@@ -31,6 +32,16 @@ html,
 body {
   margin: 0;
   padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 body {
@@ -74,9 +85,9 @@ code {
   gap: 1rem;
   flex-wrap: wrap;
   padding: 0.9rem clamp(1rem, 4vw, 2rem);
-  background: var(--cesped);
+  background: var(--noche);
   color: var(--blanco);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .marca {
@@ -109,9 +120,155 @@ code {
   font-size: 0.875rem;
 }
 
+/* ---------- Portada 3D (cancha de noche, el pozo como torre de monedas) ---------- */
+
+.portada {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: clamp(520px, 84vh, 760px);
+  overflow: hidden;
+  color: var(--blanco);
+  /* respaldo si no hay WebGL o mientras carga la escena */
+  background: radial-gradient(
+    ellipse 90% 60% at 68% 100%,
+    #10693f 0%,
+    #0b4d33 38%,
+    var(--noche) 72%
+  );
+}
+
+.portada-lienzo {
+  position: absolute;
+  inset: 0;
+}
+
+/* velo para que el texto se lea sobre la escena */
+.portada::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(4, 23, 15, 0.92) 0%,
+    rgba(4, 23, 15, 0.7) 36%,
+    rgba(4, 23, 15, 0) 60%
+  );
+}
+
+.portada-texto {
+  position: relative;
+  z-index: 2;
+  width: min(100%, 72rem);
+  margin: 0 auto;
+  padding: 3rem clamp(1rem, 4vw, 2rem);
+}
+
+.portada h1 {
+  margin: 0;
+  max-width: 9ch;
+  font-family: var(--fuente-marcador);
+  font-stretch: condensed;
+  font-size: clamp(3rem, 8vw, 5.75rem);
+  line-height: 0.92;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.portada-bajada {
+  max-width: 30rem;
+  margin: 1.25rem 0 0;
+  font-size: 1.125rem;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.portada-acciones {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  margin-top: 2rem;
+}
+
+.boton.portada-cta {
+  background: var(--marcador);
+  border-color: var(--marcador);
+  color: var(--noche);
+  font-size: 1.05rem;
+  padding: 0.7rem 1.4rem;
+}
+
+.boton.portada-cta:hover {
+  background: #ffd45c;
+  border-color: #ffd45c;
+}
+
+.portada-enlace {
+  color: var(--blanco);
+  font-weight: 600;
+}
+
+.portada-leyenda {
+  position: absolute;
+  z-index: 2;
+  right: clamp(1rem, 4vw, 2rem);
+  bottom: 1.25rem;
+  max-width: 22rem;
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.85);
+  text-align: left;
+  text-shadow: 0 1px 8px rgba(4, 23, 15, 0.9);
+}
+
+.portada-leyenda::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.38em;
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: var(--marcador);
+}
+
+@media (max-width: 52rem) {
+  .portada {
+    align-items: flex-start;
+    min-height: 640px;
+  }
+
+  .portada::before {
+    background: linear-gradient(
+      180deg,
+      rgba(4, 23, 15, 0.92) 0%,
+      rgba(4, 23, 15, 0.6) 45%,
+      rgba(4, 23, 15, 0) 70%
+    );
+  }
+
+  .portada-texto {
+    padding-top: 2.25rem;
+  }
+
+  .portada-bajada {
+    font-size: 1rem;
+  }
+
+  .portada-leyenda {
+    left: clamp(1rem, 4vw, 2rem);
+    right: auto;
+  }
+}
+
 /* ---------- Marcador (lo memorable) ---------- */
 
 .marcador {
+  scroll-margin-top: 0;
   padding: 1.5rem clamp(1rem, 4vw, 2rem) 1.75rem;
   color: var(--blanco);
   /* franjas de césped cortado */
